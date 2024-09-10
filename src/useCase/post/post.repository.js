@@ -1,6 +1,6 @@
 const prisma = require('../../db/prisma')
 
-const getAllPost = async () => {
+const getAllPost = async (limit) => {
     const posts = await prisma.post.findMany({
         include: {
             _count: {
@@ -9,6 +9,10 @@ const getAllPost = async () => {
                 }
             },
             images: true
+        },
+        take: limit,
+        orderBy: {
+            createdAt: 'desc'
         }
     })
     return posts
@@ -94,4 +98,9 @@ const updatePost = async (id, title, content) => {
     return post
 }
 
-module.exports = { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById }
+const countAllPost = async () => {
+    const count = await prisma.post.count()
+    return count
+}
+
+module.exports = { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById, countAllPost }

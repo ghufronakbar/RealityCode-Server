@@ -1,9 +1,13 @@
 const { getAllPostService, getPostByIdService, deletePostService, createPostService, deletePostImageService, updatePostService } = require('./post.service');
 
 const getAllPostController = async (req, res) => {
-    const posts = await getAllPostService()
+    const limit = Number(req.query.limit) || 5
     try {
-        return res.status(200).json({ status: 200, message: 'Get all post success', data: posts })
+        if (isNaN(limit)) {
+            return res.status(400).json({ status: 400, message: 'Limit must be a number' })
+        }
+        const posts = await getAllPostService(limit)
+        return res.status(200).json({ status: 200, message: 'Get all post success', data: posts.posts, limitation: posts.limitation })
     } catch (error) {
         console.log(error)
         return res.status(500).json({ status: 500, message: 'Internal Server Error' })
@@ -46,13 +50,13 @@ const deletePostController = async (req, res) => {
 
 const createPostController = async (req, res) => {
     const { title, content } = req.body
-    const images = req.files    
+    const images = req.files
     try {
         if (!title || !content) {
             return res.status(400).json({ status: 400, message: 'All fields must be filled' })
-        }                
+        }
         const post = await createPostService(title, content, images)
-        if(post instanceof Error) {
+        if (post instanceof Error) {
             return res.status(400).json({ status: 400, message: post.message })
         }
         return res.status(200).json({ status: 200, message: 'Create post success', data: post })

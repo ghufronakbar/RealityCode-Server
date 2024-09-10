@@ -1,10 +1,12 @@
-const { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById } = require("./post.repository")
+const { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById, countAllPost } = require("./post.repository")
 const isValidImageArray = require('../../utils/isValidImageArray')
 const removeCloudinary = require("../../utils/removeCloudinary")
 
-const getAllPostService = async () => {
-    const posts = await getAllPost()
-    return posts
+const getAllPostService = async (limit) => {
+    const posts = await getAllPost(limit)
+    const count = await countAllPost()
+    const limitation = { currenData: posts.length, totalData: count }
+    return { posts, limitation }
 }
 
 const getPostByIdService = async (id) => {
@@ -20,11 +22,11 @@ const deletePostService = async (id) => {
     if (!post) {
         return new Error('Post not found')
     }
-    for(const p of post.images) {
+    for (const p of post.images) {
         const removeImage = await removeCloudinary(p.url, "post")
         if (removeImage instanceof Error) {
             return removeImage
-        }        
+        }
     }
     const deleted = await deletePost(id)
     return deleted
