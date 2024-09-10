@@ -5,7 +5,7 @@ const removeCloudinary = require("../../utils/removeCloudinary")
 const getAllPostService = async (limit) => {
     const posts = await getAllPost(limit)
     const count = await countAllPost()
-    const limitation = { currenData: posts.length, totalData: count }
+    const limitation = { currentData: posts.length, totalData: count }
     return { posts, limitation }
 }
 
