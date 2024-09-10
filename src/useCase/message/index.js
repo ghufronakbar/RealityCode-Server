@@ -6,8 +6,8 @@ const clearCache = require('../../utils/cache/clearCache');
 const { verificationAdmin } = require('../../middleware/adminVerification');
 const uploadCloudinary = require('../../utils/uploadCloudinary');
 
-router.get('/', setCache(172800), getAllMessageController)
-router.get('/:id', setCache(172800), getMessageByIdController)
+router.get('/', verificationAdmin, setCache(172800), getAllMessageController)
+router.get('/:id', verificationAdmin, setCache(172800), getMessageByIdController)
 router.delete('/:id', verificationAdmin, clearCache('message'), deleteMessageController)
 router.post('/', uploadCloudinary("message").single('image'), clearCache('message'), createMessageController)
 
