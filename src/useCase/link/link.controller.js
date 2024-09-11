@@ -1,4 +1,4 @@
-const { getAllLinkService, createLinkService, deleteLinkService } = require('./link.service');
+const { getAllLinkService, createLinkService, deleteLinkService, updateLinkService } = require('./link.service');
 
 const getLinkController = async (req, res) => {
     try {
@@ -23,10 +23,31 @@ const createLinkController = async (req, res) => {
     }
 }
 
+const updateLinkController = async (req, res) => {
+    const id = Number(req.params.id);
+    const { title, desc, url, icon } = req.body;
+    try {
+        if (!title || !desc || !url || !icon) {
+            return res.status(400).json({ status: 400, message: 'All fields must be filled' });
+        }
+        if (isNaN(id)) {
+            return res.status(400).json({ status: 400, message: 'ID must be a number' });
+        }
+        const link = await updateLinkService(id, title, desc, url, icon);
+        if (link instanceof Error) {
+            return res.status(400).json({ status: 400, message: link.message });
+        }
+        res.status(200).json({ status: 200, message: 'Update link success', data: link });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ status: 500, message: 'Internal Server Error' });
+    }
+}
+
 const deleteLinkController = async (req, res) => {
     const id = Number(req.params.id);
     try {
-        if(isNaN(id)) {
+        if (isNaN(id)) {
             return res.status(400).json({ status: 400, message: 'ID must be a number' });
         }
         const link = await deleteLinkService(id);
@@ -40,4 +61,4 @@ const deleteLinkController = async (req, res) => {
     }
 }
 
-module.exports = { getLinkController, createLinkController, deleteLinkController }
+module.exports = { getLinkController, createLinkController, deleteLinkController, updateLinkController }

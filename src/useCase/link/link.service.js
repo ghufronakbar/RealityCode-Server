@@ -1,4 +1,4 @@
-const { getAllLink, createLink, deleteLink, getLinkById } = require("./link.repository")
+const { getAllLink, createLink, deleteLink, getLinkById, updateLink } = require("./link.repository")
 
 const getAllLinkService = async () => {
     const link = await getAllLink()
@@ -10,6 +10,13 @@ const createLinkService = async (title, desc, url, icon) => {
     return link
 }
 
+const updateLinkService = async (id, title, desc, url, icon) => {
+    const validate = await getLinkById(id)
+    if (validate === 0) return new Error('Link not found')
+    const link = await updateLink(id, title, desc, url, icon)
+    return link
+}
+
 const deleteLinkService = async (id) => {
     const validate = await getLinkById(id)
     if (validate === 0) return new Error('Link not found')
@@ -17,4 +24,4 @@ const deleteLinkService = async (id) => {
     return link
 }
 
-module.exports = { getAllLinkService, createLinkService, deleteLinkService }
+module.exports = { getAllLinkService, createLinkService, deleteLinkService, updateLinkService }

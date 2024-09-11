@@ -26,6 +26,21 @@ const createLink = async (title, desc, url, icon) => {
     return link
 }
 
+const updateLink = async (id, title, desc, url, icon) => {
+    const link = await prisma.link.update({
+        where: {
+            id
+        },
+        data: {
+            title,
+            desc,
+            url,
+            icon
+        }
+    })
+    return link
+}
+
 const deleteLink = async (id) => {
     const link = await prisma.link.delete({
         where: {
@@ -35,4 +50,4 @@ const deleteLink = async (id) => {
     return link
 }
 
-module.exports = { getAllLink, getLinkById, createLink, deleteLink }
+module.exports = { getAllLink, getLinkById, createLink, deleteLink, updateLink }
