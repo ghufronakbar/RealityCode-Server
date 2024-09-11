@@ -1,6 +1,6 @@
 const prisma = require('../../db/prisma')
 
-const getAllPost = async (limit) => {
+const getAllPost = async (limit, search) => {
     const posts = await prisma.post.findMany({
         include: {
             _count: {
@@ -13,6 +13,22 @@ const getAllPost = async (limit) => {
         take: limit,
         orderBy: {
             createdAt: 'desc'
+        },
+        where: {
+            OR: [
+                {
+                    title: {
+                        contains: search,
+                        mode: 'insensitive'
+                    }
+                },
+                {
+                    content: {
+                        contains: search,
+                        mode: 'insensitive'
+                    }
+                }
+            ]
         }
     })
     return posts
@@ -98,9 +114,70 @@ const updatePost = async (id, title, content) => {
     return post
 }
 
-const countAllPost = async () => {
-    const count = await prisma.post.count()
+const countAllPost = async (search) => {
+    const count = await prisma.post.count({
+        where: {
+            OR: [
+                {
+                    title: {
+                        contains: search,
+                        mode: 'insensitive'
+                    }
+                },
+                {
+                    content: {
+                        contains: search,
+                        mode: 'insensitive'
+                    }
+                }
+            ]
+        }
+    })
     return count
 }
 
-module.exports = { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById, countAllPost }
+const createPostImages = async (id, url) => {
+    const image = await prisma.post.update({
+        where: {
+            id
+        },
+        data: {
+            images: {
+                createMany: {
+                    data: url
+                }
+            }
+        },
+        include: {
+            _count: {
+                select: {
+                    images: true
+                }
+            },
+            images: true
+        }
+    })
+    return image
+}
+
+const getFavoritedPosts = async (objectOfIds) => {
+    const posts = await prisma.post.findMany({
+        where: {
+            OR: objectOfIds
+        },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        include: {
+            _count: {
+                select: {
+                    images: true
+                }
+            },
+            images: true
+        }
+    })
+    return posts
+}
+
+module.exports = { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById, countAllPost, createPostImages, getFavoritedPosts }

@@ -1,10 +1,10 @@
-const { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById, countAllPost } = require("./post.repository")
+const { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById, countAllPost, createPostImages, getFavoritedPosts } = require("./post.repository")
 const isValidImageArray = require('../../utils/isValidImageArray')
 const removeCloudinary = require("../../utils/removeCloudinary")
 
-const getAllPostService = async (limit) => {
-    const posts = await getAllPost(limit)
-    const count = await countAllPost()
+const getAllPostService = async (limit, search) => {
+    const posts = await getAllPost(limit, search)
+    const count = await countAllPost(search)
     const limitation = { currentData: posts.length, totalData: count }
     return { posts, limitation }
 }
@@ -70,4 +70,38 @@ const updatePostService = async (id, title, content) => {
     return updated
 }
 
-module.exports = { getAllPostService, getPostByIdService, deletePostService, createPostService, deletePostImageService, updatePostService }
+const createPostImageService = async (id, images) => {
+    const post = await getPostById(id)
+    if (!post) {
+        return new Error('Post not found')
+    }
+    if (!images) {
+        return new Error('Image cannot be empty')
+    }
+    let imagesData = []
+    for (const i of images) {
+        imagesData.push({ url: i.path })
+    }
+    const isValidImage = isValidImageArray(imagesData)
+    if (!isValidImage) {
+        return new Error('Invalid image format')
+    }
+    if (imagesData.length === 0) {
+        return new Error('Image cannot be empty')
+    }
+    const created = await createPostImages(id, imagesData)
+    return created
+}
+
+const getFavoritedPostsService = async (objectOfIds) => {
+    let parseJson = []
+    try {
+        parseJson = JSON.parse(objectOfIds)
+    } catch (error) {
+        return []
+    }
+    const posts = await getFavoritedPosts(parseJson)
+    return posts
+}
+
+module.exports = { getAllPostService, getPostByIdService, deletePostService, createPostService, deletePostImageService, updatePostService, createPostImageService, getFavoritedPostsService }
