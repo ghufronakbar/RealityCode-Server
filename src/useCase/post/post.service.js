@@ -1,6 +1,7 @@
 const { getAllPost, getPostById, deletePost, createPost, deletePostImage, updatePost, getPostImageById, countAllPost, createPostImages, getFavoritedPosts } = require("./post.repository")
 const isValidImageArray = require('../../utils/isValidImageArray')
 const removeCloudinary = require("../../utils/removeCloudinary")
+const isValidIds = require('../../utils/isValidIds')
 
 const getAllPostService = async (limit, search) => {
     const posts = await getAllPost(limit, search)
@@ -97,6 +98,10 @@ const getFavoritedPostsService = async (objectOfIds) => {
     let parseJson = []
     try {
         parseJson = JSON.parse(objectOfIds)
+        const check = isValidIds(parseJson)
+        if (!check) {
+            return []
+        }
     } catch (error) {
         return []
     }
