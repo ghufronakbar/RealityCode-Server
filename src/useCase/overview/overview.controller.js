@@ -1,8 +1,11 @@
 const { getOverviewService } = require('./overview.service');
 
 const getOverviewController = async (req, res) => {
-    const overview = await getOverviewService();
     try {
+        const overview = await getOverviewService();
+        if (overview instanceof Error) {
+            return res.status(400).json({ status: 400, message: overview.message });
+        }
         return res.status(200).json({ status: 200, message: 'Get overview success', data: overview });
     } catch (error) {
         console.log(error);
