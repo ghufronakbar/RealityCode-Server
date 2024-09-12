@@ -1,4 +1,4 @@
-const { getAllMessageService, getMessageByIdService, deleteMessageService, createMessageService } = require('./message.service');
+const { getAllMessageService, getMessageByIdService, deleteMessageService, createMessageService, replyMailService } = require('./message.service');
 
 const getAllMessageController = async (req, res) => {
     const messages = await getAllMessageService()
@@ -48,7 +48,7 @@ const createMessageController = async (req, res) => {
     const { name, email, message } = req.body
     const file = req.file || null
     try {
-        if(!name || !email || !message) {
+        if (!name || !email || !message) {
             return res.status(400).json({ status: 400, message: 'All fields must be filled' })
         }
         const data = await createMessageService(name, email, message, file)
@@ -62,4 +62,18 @@ const createMessageController = async (req, res) => {
     }
 }
 
-module.exports = { getAllMessageController, getMessageByIdController, deleteMessageController, createMessageController }
+const replyMailController = async (req, res) => {
+    const { email, name, message } = req.body
+    try {
+        const mail = await replyMailService(email, name, message)
+        if (mail instanceof Error) {
+            return res.status(400).json({ status: 400, message: mail.message })
+        }
+        return res.status(200).json({ status: 200, message: 'Reply email success' })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({ status: 500, message: 'Internal Server Error' })
+    }
+}
+
+module.exports = { getAllMessageController, getMessageByIdController, deleteMessageController, createMessageController, replyMailController }

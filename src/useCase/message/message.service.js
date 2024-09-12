@@ -2,6 +2,7 @@ const { getAllMessage, getMessageById, deleteMessage, createMessage } = require(
 const removeCloudinary = require("../../utils/removeCloudinary")
 const isProhibited = require("../../utils/isProhibited")
 const prohibitedWords = require("../../helper/prohibitedWords")
+const sendMail = require("../../utils/sendMail")
 
 const getAllMessageService = async () => {
     const messages = await getAllMessage()
@@ -38,4 +39,11 @@ const createMessageService = async (name, email, message, file) => {
     return data
 }
 
-module.exports = { getAllMessageService, getMessageByIdService, deleteMessageService, createMessageService }
+const replyMailService = async (email, name, message) => {
+    const mail = await sendMail(email, name, message)
+    if (mail instanceof Error) {
+        return new Error('Email could not be sent')
+    }
+}
+
+module.exports = { getAllMessageService, getMessageByIdService, deleteMessageService, createMessageService, replyMailService }
