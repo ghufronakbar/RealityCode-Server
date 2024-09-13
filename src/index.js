@@ -3,7 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan')
 const cors = require('cors');
-const { PORT } = require('./constant');
+const { PORT, CLIENT_URL } = require('./constant');
 const app = express();
 
 
@@ -14,6 +14,7 @@ app.use(morgan('dev'));
 app.use(cors());
 
 // ROUTES
+app.get('/', (req, res) =>  res.status(300).redirect(CLIENT_URL));
 app.use('/api', require('./routes'));
 
 app.listen(PORT, () => {

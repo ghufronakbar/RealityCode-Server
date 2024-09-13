@@ -22,13 +22,18 @@ const fetchRapidAPI = async (fetchSocial) => {
         default:
             throw new Error('Social media not found')
     }
-    const response = await axios.get(`https://${host}${path}`, {
-        headers: {
-            'x-rapidapi-key': X_RAPID_API_KEY,
-            'x-rapidapi-host': host
-        }
-    })
-    return response.data
+    try {
+        const response = await axios.get(`https://${host}${path}`, {
+            headers: {
+                'x-rapidapi-key': X_RAPID_API_KEY,
+                'x-rapidapi-host': host
+            }
+        })
+        return response.data
+    } catch (error) {
+        console.log(error)
+        return new Error("Rapid API not found")
+    }
 }
 
 module.exports = fetchRapidAPI
