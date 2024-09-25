@@ -20,16 +20,11 @@ const getAllSections = async () => {
     return sections
 }
 
-const createSection = async (title, description, subsections) => {
+const createSection = async (title, description) => {
     const section = await prisma.section.create({
         data: {
             title,
             description,
-            subsections: {
-                createMany: {
-                    data: subsections
-                }
-            }
         },
         include: {
             subsections: true
@@ -38,12 +33,13 @@ const createSection = async (title, description, subsections) => {
     return section
 }
 
-const createSubSection = async (title, description, sectionId) => {
+const createSubSection = async (title, description, sectionId, image) => {
     const subsection = await prisma.subSection.create({
         data: {
             title,
             description,
-            sectionId
+            sectionId,
+            thumbnail: image
         }
     })
     return subsection

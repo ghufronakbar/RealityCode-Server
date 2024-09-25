@@ -5,17 +5,24 @@ const getAllSectionService = async () => {
     return sections
 }
 
-const createSectionservice = async (title, description, subsections) => {
-    const section = await createSection(title, description, subsections)
+const createSectionservice = async (title, description) => {
+    const section = await createSection(title, description)
     return section
 }
 
-const createSubSectionService = async (title, description, sectionId) => {
-    const check = await getSectionById(sectionId)
+const createSubSectionService = async (title, description, sectionId, image) => {
+    const numSecId = Number(sectionId)
+    if (isNaN(numSecId)) {
+        return new Error('Section ID must be a number')
+    }
+    const check = await getSectionById(numSecId)
     if (!check) {
         return new Error('Section not found')
     }
-    const subsection = await createSubSection(title, description, sectionId)
+    if (!image) {
+        return new Error('Image not found')
+    }
+    const subsection = await createSubSection(title, description, numSecId, image.path)
     return subsection
 }
 

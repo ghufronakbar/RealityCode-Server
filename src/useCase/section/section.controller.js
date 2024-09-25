@@ -12,15 +12,11 @@ const sections = async (req, res) => {
 
 const createSection = async (req, res) => {
     try {
-        const { title, description, subsection } = req.body
+        const { title, description } = req.body
         if (!title || !description) {
             return res.status(400).json({ status: 400, message: 'All fields must be filled' })
-        }
-        const check = isValidSubsection(subsection)
-        if (!check) {
-            return res.status(400).json({ status: 400, message: 'Invalid subsection' })
-        }
-        const section = await createSectionservice(title, description, subsection)
+        }        
+        const section = await createSectionservice(title, description)
         if (section instanceof Error) {
             return res.status(400).json({ status: 400, message: section.message })
         }
@@ -32,12 +28,13 @@ const createSection = async (req, res) => {
 }
 
 const createSubSection = async (req, res) => {
+    const { title, description, sectionId } = req.body
+    const image = req.file
     try {
-        const { title, description, sectionId } = req.body
         if (!title || !description || !sectionId) {
             return res.status(400).json({ status: 400, message: 'All fields must be filled' })
         }
-        const subSection = await createSubSectionService(title, description, sectionId)
+        const subSection = await createSubSectionService(title, description, sectionId, image)
         if (subSection instanceof Error) {
             return res.status(400).json({ status: 400, message: subSection.message })
         }
