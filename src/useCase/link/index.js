@@ -6,8 +6,8 @@ const clearCache = require('../../utils/cache/clearCache');
 const { verificationAdmin } = require('../../middleware/adminVerification');
 
 router.get('/', setCache(172800), getLinkController)
-router.post('/', verificationAdmin, clearCache('link'), createLinkController)
-router.put('/:id', verificationAdmin, clearCache('link'), updateLinkController)
-router.delete('/:id', verificationAdmin, clearCache('link'), deleteLinkController)
+router.post('/', verificationAdmin, clearCache('section'), createLinkController)
+router.put('/:id', verificationAdmin, clearCache('section'), updateLinkController)
+router.delete('/:id', verificationAdmin, clearCache('section'), deleteLinkController)
 
 module.exports = router

@@ -8,7 +8,8 @@ const getAllPost = async (limit, search) => {
                     images: true
                 }
             },
-            images: true
+            images: true,
+            subsection: true
         },
         take: limit,
         orderBy: {
@@ -22,12 +23,6 @@ const getAllPost = async (limit, search) => {
                         mode: 'insensitive'
                     }
                 },
-                {
-                    content: {
-                        contains: search,
-                        mode: 'insensitive'
-                    }
-                }
             ]
         }
     })
@@ -43,9 +38,10 @@ const getPostById = async (id) => {
             _count: {
                 select: {
                     images: true
-                }
+                },
             },
-            images: true
+            images: true,
+            subsection: true
         }
     })
     return post
@@ -60,11 +56,12 @@ const deletePost = async (id) => {
     return post
 }
 
-const createPost = async (title, content, images) => {
+const createPost = async (title, content, images, subsectionId) => {
     const post = await prisma.post.create({
         data: {
             title,
             content,
+            subsectionId,
             images: {
                 createMany: {
                     data: images

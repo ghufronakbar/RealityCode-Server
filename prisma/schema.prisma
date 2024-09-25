@@ -12,7 +12,7 @@ model Admin {
   email        String
   password     String
   createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  updatedAt    DateTime @default(now()) @updatedAt
   refreshToken String?
 }
 
@@ -23,7 +23,7 @@ model Link {
   desc      String
   icon      String   @db.Text
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Message {
@@ -33,23 +33,45 @@ model Message {
   message   String
   file      String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String
-  images    Image[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int        @id @default(autoincrement())
+  title        String
+  content      String
+  images       Image[]
+  subsectionId Int
+  subsection   SubSection @relation(fields: [subsectionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @default(now()) @updatedAt
+}
+
+model Section {
+  id          Int          @id @default(autoincrement())
+  title       String
+  description String
+  subsections SubSection[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
+}
+
+model SubSection {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  sectionId   Int
+  section     Section  @relation(fields: [sectionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  posts       Post[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }
 
 model Image {
   id        Int      @id @default(autoincrement())
   url       String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
   post      Post     @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   postId    Int
 }

@@ -33,7 +33,11 @@ const deletePostService = async (id) => {
     return deleted
 }
 
-const createPostService = async (title, content, images) => {
+const createPostService = async (title, content, images, subsectionId) => {
+    const numSubSec = Number(subsectionId)
+    if (isNaN(numSubSec)) {
+        return new Error('Subsection ID must be a number')
+    }    
     let imagesData = []
     for (const image of images) {
         imagesData.push({ url: image.path })
@@ -45,7 +49,7 @@ const createPostService = async (title, content, images) => {
     if (imagesData.length === 0) {
         return new Error('Image cannot be empty')
     }
-    const post = await createPost(title, content, imagesData)
+    const post = await createPost(title, content, imagesData, numSubSec)
     return post
 }
 
