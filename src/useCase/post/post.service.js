@@ -3,9 +3,9 @@ const isValidImageArray = require('../../utils/isValidImageArray')
 const removeCloudinary = require("../../utils/removeCloudinary")
 const isValidIds = require('../../utils/isValidIds')
 
-const getAllPostService = async (limit, search) => {
-    const posts = await getAllPost(limit, search)
-    const count = await countAllPost(search)
+const getAllPostService = async (limit, search, subSectionId) => {
+    const posts = await getAllPost(limit, search, subSectionId)
+    const count = await countAllPost(search, subSectionId)
     const limitation = { currentData: posts.length, totalData: count }
     return { posts, limitation }
 }
@@ -37,7 +37,7 @@ const createPostService = async (title, content, images, subsectionId) => {
     const numSubSec = Number(subsectionId)
     if (isNaN(numSubSec)) {
         return new Error('Subsection ID must be a number')
-    }    
+    }
     let imagesData = []
     for (const image of images) {
         imagesData.push({ url: image.path })

@@ -3,11 +3,15 @@ const { getAllPostService, getPostByIdService, deletePostService, createPostServ
 const getAllPostController = async (req, res) => {
     const limit = Number(req.query.limit) || 5
     const search = req.query.search || ''
+    const subSectionId = Number(req.query.subSectionId)
     try {
         if (isNaN(limit)) {
             return res.status(400).json({ status: 400, message: 'Limit must be a number' })
         }
-        const posts = await getAllPostService(limit, search)
+        if (isNaN(subSectionId)) {
+            return res.status(400).json({ status: 400, message: 'Sub section ID must be a number' })
+        }
+        const posts = await getAllPostService(limit, search, subSectionId)
         return res.status(200).json({ status: 200, message: 'Get all post success', data: posts.posts, limitation: posts.limitation })
     } catch (error) {
         console.log(error)

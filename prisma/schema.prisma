@@ -61,6 +61,7 @@ model SubSection {
   title       String
   description String
   sectionId   Int
+  thumbnail   String?
   section     Section  @relation(fields: [sectionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   posts       Post[]
   createdAt   DateTime @default(now())

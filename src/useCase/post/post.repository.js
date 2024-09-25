@@ -1,6 +1,6 @@
 const prisma = require('../../db/prisma')
 
-const getAllPost = async (limit, search) => {
+const getAllPost = async (limit, search, subSectionId) => {
     const posts = await prisma.post.findMany({
         include: {
             _count: {
@@ -16,13 +16,20 @@ const getAllPost = async (limit, search) => {
             createdAt: 'desc'
         },
         where: {
-            OR: [
+            AND: [
                 {
-                    title: {
-                        contains: search,
-                        mode: 'insensitive'
-                    }
+                    subsectionId: subSectionId
                 },
+                {
+                    OR: [
+                        {
+                            title: {
+                                contains: search,
+                                mode: 'insensitive'
+                            }
+                        },
+                    ]
+                }
             ]
         }
     })
@@ -111,23 +118,30 @@ const updatePost = async (id, title, content) => {
     return post
 }
 
-const countAllPost = async (search) => {
+const countAllPost = async (search, subSectionId) => {
     const count = await prisma.post.count({
         where: {
-            OR: [
+            AND: [
                 {
-                    title: {
-                        contains: search,
-                        mode: 'insensitive'
-                    }
+                    subsectionId: subSectionId
                 },
                 {
-                    content: {
-                        contains: search,
-                        mode: 'insensitive'
-                    }
+                    OR: [
+                        {
+                            title: {
+                                contains: search,
+                                mode: 'insensitive'
+                            }
+                        },
+                        {
+                            content: {
+                                contains: search,
+                                mode: 'insensitive'
+                            }
+                        }
+                    ]
                 }
-            ]
+            ],
         }
     })
     return count
