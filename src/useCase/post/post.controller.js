@@ -54,13 +54,13 @@ const deletePostController = async (req, res) => {
 }
 
 const createPostController = async (req, res) => {
-    const { title, content, sectionId } = req.body
+    const { title, content, subSectionId } = req.body
     const images = req.files
     try {
         if (!title || !content) {
             return res.status(400).json({ status: 400, message: 'All fields must be filled' })
         }
-        const post = await createPostService(title, content, images, sectionId)
+        const post = await createPostService(title, content, images, subSectionId)
         if (post instanceof Error) {
             return res.status(400).json({ status: 400, message: post.message })
         }
